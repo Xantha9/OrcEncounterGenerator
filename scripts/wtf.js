@@ -240,6 +240,7 @@ var WTF = (function() {
         // Update output
 
         dom.generate.text( randomItem( responses ) );
+        dom.definition.html("")
         dom.output.html(
             '<dl>' +
                 '<dt>' + randomItem( headings ) + '</dt>' +
