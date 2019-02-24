@@ -79,23 +79,17 @@ noscript {
 	color: black;
 }
 
+#definition {
+	margin: 40px 0;
+	font-size: 20px;
+	font-style: italic;
+}
+
 aside {
 	position: absolute;
 	margin: 12px 8px;
 	right: 0;
 	top: 0;
-}
-
-#share li {
-	list-style: none;
-	display: inline;
-}
-
-#share-facebook {}
-#share-twitter {position: relative; top: -1px;}
-.twitter-share-button {
-	font-size: 11px;
-	color: #000;
 }
 
 footer {

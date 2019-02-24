@@ -1,3 +1,5 @@
+// CHANGED
+let word;
 
 var WTF = (function() {
 
@@ -34,7 +36,7 @@ var WTF = (function() {
     */
 
     function start() {
-        
+
         // Copy out templates then remove from corpus
 
         templates = corpus.template;
@@ -129,16 +131,16 @@ var WTF = (function() {
         var i, n, key, val, map = {}, keys = {}, data = {}, rows = json.feed.entry;
 
         for ( key in rows[0] ) {
-            
+
             if ( RE_COL.test( key ) ) {
-                
+
                 map[ key ] = key.match( RE_COL )[ 1 ].toLowerCase();
                 keys[ key ] = [];
             }
         }
 
         for ( key in keys ) {
-            
+
             data[ map[ key ] ] = keys[ key ];
 
             for ( i = 0, n = rows.length; i < n; i++ ) {
@@ -169,7 +171,9 @@ var WTF = (function() {
 
         dom = {
             generate: $( '#generate' ),
-            output: $( '#output' )
+            output: $( '#output' ),
+            // CHANGED
+            definition: $( '#definition' )
         };
 
         dom.generate.click( function() {
@@ -200,7 +204,7 @@ var WTF = (function() {
             }
             return a.length > b.length ? -1 : 1
         })
-        
+
         var content = '@(type)'.replace( 'type', types.join( '|' ) );
 
         regex = new RegExp( content, 'gi' );
@@ -247,16 +251,37 @@ var WTF = (function() {
 
         setTimeout( showOutput, 0 );
         hideOutput();
+
+        // CHANGED
+        $.get("https://googledictionaryapi.eu-gb.mybluemix.net/?define=" + part, function(data, word) {
+            dom.definition.html(
+                '<dl>' +
+                    '<dt>' + data.word + ':</dt>' +
+                    '<dd>' + data.meaning.noun[0].definition + '</dd>' +
+                '</dl>'
+            );
+            setTimeout( showOutputDefinition, 0 );
+            hideOutputDefinition();
+        })
     }
 
     function hideOutput() {
-
         dom.output.removeClass( 'animate' ).css( 'opacity', 0 );
     }
 
     function showOutput() {
-
         dom.output.addClass( 'animate' ).css( 'opacity', 1 );
+    }
+
+    // CHANGED
+    function showOutputDefinition() {
+        dom.definition.addClass( 'animate' ).css( 'opacity', 1 );
+        dom.generate.addClass( 'animate' ).css( 'opacity', 1 );
+    }
+
+    function hideOutputDefinition() {
+        dom.definition.removeClass( 'animate' ).css( 'opacity', 0 );
+        dom.generate.removeClass( 'animate' ).css( 'opacity', 0 );
     }
 
     function randomItem( list, remove ) {
@@ -278,7 +303,7 @@ var WTF = (function() {
         for ( var key in corpus )
 
             copy[ key ] = corpus[ key ].concat();
-        
+
         return copy;
     }
 
@@ -297,7 +322,7 @@ var WTF = (function() {
             Expects one of the following:
 
                 1.  An object with `templates` and any amount of keys for word types, for example:
-        
+
                     {
                         templates: [ 'The @color @animal', 'The @animal was @color' ],
                         animal: [ 'dog', 'cat', 'rabbit' ],
@@ -307,7 +332,7 @@ var WTF = (function() {
                 2.  A path to a JSON file with the same structure as above (see `sample.json`)
 
                 3.  A Google spreadsheet key (e.g 0AvG1Hx204EyydF9ub1M2cVJ3Z1VGdDhTSWg0ZV9LNGc)
-                    You must first publish the spreadsheet as a CSV 
+                    You must first publish the spreadsheet as a CSV
                     @see https://support.google.com/drive/answer/37579?hl=en
 
         */
